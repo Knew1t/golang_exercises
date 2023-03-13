@@ -4,11 +4,8 @@
 package main
 
 import (
-	// "bufio"
-	// "bytes"
 	"bufio"
 	"fmt"
-	// "strings"
 )
 
 type LinesCounter int

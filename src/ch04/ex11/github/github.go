@@ -9,11 +9,19 @@ import (
 	"time"
 )
 
-const IssuesURL = "https://api.github.com/repos/"
+const (
+	IssuesURL       = "https://api.github.com/search/issues"
+	RepoForIssueURL = "https://api.github.com/repos/Knew1t/configs/issues"
+)
 
 type IssuesSearchResult struct {
 	TotalCount int `json:"total_count"`
 	Items      []*Issue
+}
+
+type IssueCreateResult struct {
+	Id      int
+	HTMLURL string `json:"html_url"`
 }
 
 type Issue struct {
@@ -33,11 +41,10 @@ type User struct {
 
 // SearchIssues queries the GitHub issue tracker.
 func SearchIssues(terms []string) (*IssuesSearchResult, error) {
-	// q := url.QueryEscape(strings.Join(terms, " "))
+	q := url.QueryEscape(strings.Join(terms, " "))
 	fmt.Println(strings.Join(terms, " "))
-	// fmt.Println(IssuesURL + "?q=" + q)
-	fmt.Println(IssuesURL )
-	resp, err := http.Get(IssuesURL)
+	fmt.Println(IssuesURL + "?q=" + q)
+	resp, err := http.Get(IssuesURL + "?q=" + q)
 	if err != nil {
 		return nil, err
 	}
@@ -54,4 +61,8 @@ func SearchIssues(terms []string) (*IssuesSearchResult, error) {
 	}
 	resp.Body.Close()
 	return &result, nil
+}
+
+func CreateIssue(content []string) (*IssueCreateResult, error) {
+	q := url.QueryEscape()
 }

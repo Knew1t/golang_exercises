@@ -1,8 +1,10 @@
 package github
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -11,7 +13,8 @@ import (
 
 const (
 	IssuesURL       = "https://api.github.com/search/issues"
-	RepoForIssueURL = "https://api.github.com/repos/Knew1t/configs/issues"
+	RepoForIssueURL = "https://api.github.com/repos/Knew1t/configs/issues/"
+	token           = " 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"
 )
 
 type IssuesSearchResult struct {
@@ -63,6 +66,32 @@ func SearchIssues(terms []string) (*IssuesSearchResult, error) {
 	return &result, nil
 }
 
-func CreateIssue(content []string) (*IssueCreateResult, error) {
-	q := url.QueryEscape()
+func CreateIssue( /* content []string */ ) (*IssueCreateResult, error) {
+	var result IssueCreateResult
+	client := &http.Client{}
+	issue := Issue{Number: 1, Title: "test", CreateAt: time.Now(), Body: "I am creating an Issue"}
+	json_issue, err := json.Marshal(issue)
+	if err != nil {
+		log.Fatalf("Json marshaling failed %s", err)
+	}
+	issueRequest, _ := http.NewRequest("POST", RepoForIssueURL, bytes.NewBuffer(json_issue))
+	issueRequest.Header.Set("Authorisation", "token "+token)
+	issueRequest.Header.Set("Accept", "application/vnd.github+json")
+	issueRequest.Header.Set("Content-type", "application/json")
+
+	fmt.Println("ISSUEREQUEST")
+	fmt.Println(issueRequest)
+	resp, err := client.Do(issueRequest)
+
+	fmt.Println("RESP")
+	fmt.Println(resp)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// resp, err := http.Post(RepoForIssueURL, "application/json", bytes.NewBuffer(json_issue))
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		resp.Body.Close()
+		return nil, err
+	}
+	return &result, nil
 }

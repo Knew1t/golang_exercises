@@ -6,7 +6,7 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
 	// "os"
 	// "log"
 	// "os"
@@ -24,7 +24,7 @@ func main() {
 	// for _, item := range result.Items {
 	// 		fmt.Printf("#%-5d %s %9.9s %.55s\n", item.Number, item.CreateAt.Format("2006.01.02"), item.User.Login, item.Title)
 	// }
-  result, _ := github.CreateIssue()
-  fmt.Println("response")
-  fmt.Println(result.HTMLURL)
+	github.CreateIssue()
+	// fmt.Println("response")
+	// fmt.Println(result.HTMLURL)
 }

@@ -12,5 +12,5 @@ import (
 func main() {
 	// github.CreateIssue()
 	github.ListIssues()
-github.ReadIssue(1)
+	github.ReadIssue(17)
 }

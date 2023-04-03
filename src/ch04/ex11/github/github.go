@@ -112,8 +112,12 @@ func ReadIssue(id int) {
 	}
 	defer resp.Body.Close()
 	var result Issue
-	json.NewDecoder(resp.Body).Decode(&result)
+  json.NewDecoder(resp.Body).Decode(&result)
 	fmt.Println(result.Number)
 	fmt.Println(result.Title)
 	fmt.Println(result.Body)
+}
+
+func UpdateIssue(id int) {
+
 }

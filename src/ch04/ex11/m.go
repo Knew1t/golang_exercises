@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
+
+	// "os"
 	"strings"
 )
 
@@ -13,7 +16,7 @@ type Issue struct {
 	Body  string `json:"body"`
 }
 
-func main() {
+func mainn() {
 	url := "https://api.github.com/repos/:owner/:repo/issues"
 
 	// Replace :owner and :repo with your Github username and repository name
@@ -41,7 +44,8 @@ func main() {
 	req.Header.Set("Content-Type", "application/json")
 
 	// Add your Github access token to the Authorization header
-	req.Header.Set("Authorization", "Bearer TOKEN")
+	token := os.Getenv("GITHUB_TKN")
+	req.Header.Set("Authorization", "Bearer "+token)
 
 	// Create a new http client and perform the request
 	client := &http.Client{}

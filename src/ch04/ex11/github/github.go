@@ -12,7 +12,7 @@ import (
 	"net/http"
 	// "net/url"
 	// "strings"
-	// "time"
+	"time"
 )
 
 const (
@@ -20,24 +20,14 @@ const (
 	RepoForIssueURL = "https://api.github.com/repos/Knew1t/configs/issues"
 )
 
-// type IssuesSearchResult struct {
-// 	TotalCount int `json:"total_count"`
-// 	Items      []*Issue
-// }
-//
-// type IssueCreateResult struct {
-// 	Id      int
-// 	HTMLURL string `json:"html_url"`
-// }
-
 type Issue struct {
-	Number int
-	// HTMLURL  string `json:"html_url,omitempty"`
-	Title string `json:"title"`
-	// State    string `json:"State,omitempty"`
-	// User     *User
-	// CreateAt time.Time `json:"created_at,omitempty"`
-	Body string `json:"body"` // in markdown format
+	Number   int
+	HTMLURL  string `json:"html_url,omitempty"`
+	Title    string `json:"title"`
+	State    string `json:"state"`
+	User     *User
+	CreateAt time.Time `json:"created_at,omitempty"`
+	Body     string    `json:"body"` // in markdown format
 }
 
 type User struct {
@@ -47,7 +37,6 @@ type User struct {
 
 func CreateIssue( /* content []string */ ) /* *IssueCreateResult, error */ {
 	token := os.Getenv("GITHUB_TKN")
-	fmt.Println(token)
 	newIssue := Issue{
 		Title: "New Issue",
 		Body:  "Test issue body",
@@ -74,7 +63,7 @@ func CreateIssue( /* content []string */ ) /* *IssueCreateResult, error */ {
 
 func ListIssues() *[]Issue {
 	token := os.Getenv("GITHUB_TKN")
-	req, err := http.NewRequest("GET", RepoForIssueURL, nil)
+	req, err := http.NewRequest("GET", RepoForIssueURL+"?state=all", nil)
 	if err != nil {
 		panic(err)
 	}
@@ -86,16 +75,17 @@ func ListIssues() *[]Issue {
 		panic(err)
 	}
 	defer resp.Body.Close()
-	fmt.Println(resp.Status)
 	var result []Issue
 	json.NewDecoder(resp.Body).Decode(&result)
 	for _, elem := range result {
 		fmt.Println(elem.Number)
+		fmt.Println(elem.State)
 		fmt.Println(elem.Title)
 		fmt.Println(elem.Body)
 	}
 	return &result
 }
+
 
 func ReadIssue(id int) {
 	token := os.Getenv("GITHUB_TKN")
@@ -112,12 +102,46 @@ func ReadIssue(id int) {
 	}
 	defer resp.Body.Close()
 	var result Issue
-  json.NewDecoder(resp.Body).Decode(&result)
+	json.NewDecoder(resp.Body).Decode(&result)
 	fmt.Println(result.Number)
+	fmt.Println(result.State)
 	fmt.Println(result.Title)
 	fmt.Println(result.Body)
 }
 
 func UpdateIssue(id int) {
+	token := os.Getenv("GITHUB_TKN")
+	data, err := json.Marshal(Issue{Title: "Upd", Body: "Upd", State: "closed"})
+	if err != nil {
+		panic(err)
+	}
+	req, err := http.NewRequest("PATCH", RepoForIssueURL+"/"+strconv.Itoa(id), bytes.NewBuffer(data))
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Set("Accept", "application/vnd.github+json")
+	req.Header.Set("Authorization", "Bearer "+token)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+}
 
+func DeleteIssue(id int) {
+	token := os.Getenv("GITHUB_TKN")
+	req, err := http.NewRequest("DELETE", RepoForIssueURL+"/"+strconv.Itoa(id), nil)
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Set("Accept", "application/vnd.github+json")
+	req.Header.Set("Authorization", "Bearer "+token)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Status)
 }

@@ -28,30 +28,33 @@ type Comics struct {
 func parseComic(latest_id int) (*map[int]ComicInfo, error) {
 	var ar []ComicInfo
 	m := make(map[int]ComicInfo)
-	for i := 1; i <= latest_id; i++ {
-		resp, err := http.Get("https://xkcd.com/" + strconv.Itoa(i) + "/info.0.json")
-		if err != nil {
-			panic(err)
-		}
-		if resp.StatusCode != http.StatusOK {
-			resp.Body.Close()
-			return nil, fmt.Errorf("search query failed: %s", resp.Status)
-		}
+	for i, id := 1, 0; i <= latest_id; i++ {
+		if i != 404 {
+			resp, err := http.Get("https://xkcd.com/" + strconv.Itoa(i) + "/info.0.json")
+			if err != nil {
+				panic(err)
+			}
+			if resp.StatusCode != http.StatusOK {
+				resp.Body.Close()
+				return nil, fmt.Errorf("search query failed: %s", resp.Status)
+			}
 
-		var result ComicInfo
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-			resp.Body.Close()
-			return nil, err
+			var result ComicInfo
+			if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+				resp.Body.Close()
+				return nil, err
+			}
+			ar = append(ar, result)
+			m[i] = ar[id]
+			id++
+			fmt.Println(i)
 		}
-		ar = append(ar, result)
-		m[i] = ar[i-1]
-		fmt.Println(i)
 	}
 	return &m, nil
 }
 
 func parseIndex(id int) {
-	jsonFile, err := os.Open("test.json")
+	jsonFile, err := os.Open("index.json")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -67,14 +70,14 @@ func parseIndex(id int) {
 func CreateIndex(latest_id int) {
 	ar, _ := parseComic(latest_id)
 	file, _ := json.MarshalIndent(ar, "", " ")
-	_ = ioutil.WriteFile("test.json", file, 0o644)
+	_ = ioutil.WriteFile("index.json", file, 0o644)
 }
 
 func main() {
 	start := time.Now()
-	CreateIndex(2758)
+	// CreateIndex(2758)
+	id, _ := strconv.Atoi(os.Args[1])
+	parseIndex(id)
 	elapsed := time.Since(start)
 	log.Printf("Binomial took %s", elapsed)
-	// id, _ := strconv.Atoi(os.Args[1])
-	// parseIndex(id)
 }

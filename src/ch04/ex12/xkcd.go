@@ -6,11 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
+	// "log"
 	"net/http"
 	"os"
 	"strconv"
-	"time"
+	// "time"
 	// "net/url"
 	// "strings"
 )
@@ -65,6 +65,7 @@ func parseIndex(id int) {
 	fmt.Println("Num:", id)
 	fmt.Println("Title:", m[id].Safe_title)
 	fmt.Println("Transcript:\n", m[id].Transcript)
+	fmt.Println("URL: https://xkcd.com/" + strconv.Itoa(m[id].Num))
 }
 
 func CreateIndex(latest_id int) {
@@ -74,10 +75,10 @@ func CreateIndex(latest_id int) {
 }
 
 func main() {
-	start := time.Now()
+	// start := time.Now()
 	// CreateIndex(2758)
 	id, _ := strconv.Atoi(os.Args[1])
 	parseIndex(id)
-	elapsed := time.Since(start)
-	log.Printf("Binomial took %s", elapsed)
+	// elapsed := time.Since(start)
+	// log.Printf("Binomial took %s", elapsed)
 }

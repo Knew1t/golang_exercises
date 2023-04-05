@@ -6,9 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 	// "net/url"
 	// "strings"
 )
@@ -43,7 +45,7 @@ func parseComic(latest_id int) (*map[int]ComicInfo, error) {
 		}
 		ar = append(ar, result)
 		m[i] = ar[i-1]
-		// fmt.Println(m[i])
+		fmt.Println(i)
 	}
 	return &m, nil
 }
@@ -57,9 +59,9 @@ func parseIndex(id int) {
 	var m map[int]ComicInfo
 	json.Unmarshal(byteValue, &m)
 	// json.NewEncoder(byteValue).Encode(m)
-  fmt.Println("Num:", id)
-  fmt.Println("Title:",m[id].Safe_title)
-  fmt.Println("Transcript:\n",m[id].Transcript)
+	fmt.Println("Num:", id)
+	fmt.Println("Title:", m[id].Safe_title)
+	fmt.Println("Transcript:\n", m[id].Transcript)
 }
 
 func CreateIndex(latest_id int) {
@@ -69,7 +71,10 @@ func CreateIndex(latest_id int) {
 }
 
 func main() {
-  CreateIndex(2758)
+	start := time.Now()
+	CreateIndex(2)
+	elapsed := time.Since(start)
+	log.Printf("Binomial took %s", elapsed)
 	// id, _ := strconv.Atoi(os.Args[1])
 	// parseIndex(id)
 }

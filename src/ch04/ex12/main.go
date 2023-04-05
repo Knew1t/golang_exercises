@@ -72,7 +72,7 @@ func CreateIndex(latest_id int) {
 
 func main() {
 	start := time.Now()
-	CreateIndex(2)
+	CreateIndex(2758)
 	elapsed := time.Since(start)
 	log.Printf("Binomial took %s", elapsed)
 	// id, _ := strconv.Atoi(os.Args[1])

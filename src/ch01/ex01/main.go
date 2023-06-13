@@ -1,4 +1,4 @@
-package echo
+package main
 
 import ("fmt" 
 "os"
@@ -8,5 +8,9 @@ func echo() string {
   str := strings.Join(os.Args, " ")
   fmt.Println(str)
   return str
+}
+
+func main() {
+  echo()
 }
 

@@ -1,3 +1,3 @@
-module ex1.1
+module main.go
 
 go 1.18

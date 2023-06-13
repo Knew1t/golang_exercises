@@ -1,3 +1,4 @@
+// Exercise 1.2: Modify the echo program to print the index and value of each of its arguments, one per line.
 package main
 
 import (
@@ -5,16 +6,17 @@ import (
   "os"
 )
 
-func echoIdValue() {
-  var s string
-  for id, arg := range os.Args{
-    fmt.Println(id, len(arg))
-    s += string(id) + " " +string(len(arg)) + "\n"
+func echoIdValue() map [int]int {
+  resValue := make(map[int]int)
+  for i, elem := range os.Args {
+    fmt.Println(i, len(elem))
+    resValue[i] = len(elem)
   }
+  return resValue
 }
 
 func main() {
-  echoIdValue()
+  fmt.Println(echoIdValue())
 }
 
 
